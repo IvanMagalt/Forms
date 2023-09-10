@@ -1,14 +1,16 @@
-package Server;
+package server;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class ServerRunnable implements Runnable {
+public class ServerRunnable extends Request implements Runnable {
 
     //method - метод передачи (GET - по умолчанию, POST)
 
@@ -82,7 +84,7 @@ public class ServerRunnable implements Runnable {
             request.setMethod(method);
             request.setPath(path);
             request.setVersion(requestLine[2]);
-            request.setQueryParams();
+            request.setQueryParams2();
 
             // ищем заголовки (парсим)
             final byte[] headersDelimiter = new byte[]{'\r', '\n', '\r', '\n'};

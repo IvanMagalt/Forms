@@ -1,4 +1,4 @@
-package Server;
+package server;
 
 import com.sun.net.httpserver.Request;
 import java.io.BufferedOutputStream;

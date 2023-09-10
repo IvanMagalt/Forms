@@ -3,7 +3,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 
-import Server.Server;
+import server.Server;
 
 public class Main {
 
