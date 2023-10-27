@@ -1,6 +1,6 @@
-package server;
-
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URISyntaxException;
@@ -44,7 +44,7 @@ public class Server {
         }
     }
 
-    private void proceedConnection(Socket socket){
+    private void proceedConnection(Socket socket) {
         try (final var in = new BufferedInputStream(socket.getInputStream());
              final var out = new BufferedOutputStream(socket.getOutputStream())) {
 
