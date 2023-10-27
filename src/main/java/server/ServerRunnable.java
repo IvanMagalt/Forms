@@ -84,7 +84,7 @@ public class ServerRunnable extends Request implements Runnable {
             request.setMethod(method);
             request.setPath(path);
             request.setVersion(requestLine[2]);
-            request.setQueryParams2();
+            request.setQueryParams();
 
             // ищем заголовки (парсим)
             final byte[] headersDelimiter = new byte[]{'\r', '\n', '\r', '\n'};

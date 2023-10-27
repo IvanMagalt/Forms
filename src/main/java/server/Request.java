@@ -86,16 +86,10 @@ public class Request {
                 .findFirst();
     }
 
-    private String setQueryParams() {
+    public void setQueryParams() {
         int delimiter = path.indexOf(QUERY_DELIMITER);
-        if (delimiter == -1);
+        if (delimiter == -1) return;
         queryParams = URLEncodedUtils.parse(path.substring(delimiter + 1), StandardCharsets.UTF_8);
-        return queryParams.toString();
-    }
-
-    public String setQueryParams2() {
-        return setQueryParams();
-
     }
 
     public List<NameValuePair> getBodyParams() {
