@@ -1,75 +1,23 @@
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.LocalDateTime;
-
-import server.Server;
 
 public class Main {
+    private static final int SERVER_SOCKET = 9999;
+    private static final int poolSizeThreads = 64;
 
-    public static void main(String[] args) {
-        Server server = new Server(9999);
-        initializeHandlers(server);
-        server.printHandlers();
+    public static void main(String[] args) throws InterruptedException {
+
+        Server server = new Server(SERVER_SOCKET, poolSizeThreads);
+        server.addHandler("GET", "/messages", ((request, responseStream) -> {
+            try {
+                server.responseWithoutContent(responseStream, "404", "Not found");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }));
+
+        server.addHandler("POST", "/messages", (request, responseStream) ->
+                server.responseWithoutContent(responseStream, "404", "Not found"));
+        server.addHandler("GET", "/", ((request, responseStream) -> server.defaultHandler(responseStream, "spring.png")));
         server.start();
-    }
-
-    private static void initializeHandlers(Server server) {
-        server.addHandler("GET",
-                "/index.html",
-                (request, responseStream) -> {
-                    try {
-                        final Path filePath = Path.of(".", "public", "/index.html");
-                        final String mimeType = Files.probeContentType(filePath);
-                        final long length = Files.size(filePath);
-                        responseStream.write((
-                                "HTTP/1.1 200 OK\r\n" +
-                                        "Content-Type: " + mimeType + "\r\n" +
-                                        "Content-Length: " + length + "\r\n" +
-                                        "Connection: close\r\n" +
-                                        "\r\n"
-                        ).getBytes());
-                        Files.copy(filePath, responseStream);
-                        responseStream.flush();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-
-        server.addHandler("GET", "/classic.html", (request, responseStream) -> {
-            try {
-                final Path filePath = Path.of(".", "public", "/classic.html");
-                final String mimeType = Files.probeContentType(filePath);
-                final String template = Files.readString(filePath);
-                final byte[] content = template.replace(
-                        "{time}",
-                        LocalDateTime.now().toString()
-                ).getBytes();
-                responseStream.write((
-                        "HTTP/1.1 200 OK\r\n" +
-                                "Content-Type: " + mimeType + "\r\n" +
-                                "Content-Length: " + content.length + "\r\n" +
-                                "Connection: close\r\n" +
-                                "\r\n"
-                ).getBytes());
-                responseStream.write(content);
-                responseStream.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-
-        server.addHandler("POST", "/", (request, responseStream) -> {
-            try {
-                responseStream.write((
-                        "HTTP/1.1 200 OK\r\n" +
-                                "Connection: close\r\n" +
-                                "\r\n"
-                ).getBytes());
-                responseStream.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
     }
 }
